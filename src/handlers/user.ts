@@ -1,5 +1,5 @@
 import prisma from '../db';
-import {comparePassowords, createJWT} from '../modules/auth';
+import {comparePasswords, createJWT} from '../modules/auth';
 import {hashPassword} from '../modules/auth';
 
 export const createNewUser = async (req, res) => {
@@ -20,7 +20,7 @@ export const signin = async (req, res) => {
     },
   });
 
-  const isValid = await comparePassowords(req.body.password, user.password);
+  const isValid = await comparePasswords(req.body.password, user.password);
   if (!isValid) {
     res.status(401);
     res.json({message: 'not authorized'});
