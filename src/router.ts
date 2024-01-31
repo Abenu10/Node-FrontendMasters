@@ -1,42 +1,63 @@
 import {Router} from 'express';
 import {body, oneOf, validationResult} from 'express-validator';
 import {handleInputError} from './modules/middleware';
+import {
+  createProduct,
+  deleteProduct,
+  getOneProduct,
+  getProducts,
+  updateProduct,
+} from './handlers/product';
+import {
+  createUpdate,
+  deleteUpdate,
+  getOneUpdate,
+  getUpdates,
+  updateUpdatesById,
+} from './handlers/update';
 
 const router = Router();
 //  Product
-router.get('/product', (req, res) => {
-  res.json({Message: 'message'});
-});
-router.get('/product/:id', (req, res) => {});
+router.get('/product', getProducts);
+router.get('/product/:id', getOneProduct);
+router.post(
+  '/product',
+  body('name').isString(),
+  handleInputError,
+  createProduct
+);
 
 router.put(
   '/product/:id',
   body('name').isString(),
   handleInputError,
-  (req, res) => {}
+  updateProduct
 );
 
-router.post('/product', body('name').isString(), handleInputError, () => {});
-router.delete('/product/:id', () => {});
+router.delete('/product/:id', deleteProduct);
+
 //  Update
-router.get('/update', () => {});
-router.get('/update/:id', () => {});
-router.put(
-  '/update/:id',
-  body('title').optional(),
-  body('body').optional(),
-  body('status').isIn(['IN_PROGRESS','SHIPPED','DEPRECATED']),
-  body('version').optional(),
-  handleInputError,
-  () => {}
-);
+router.get('/update', getUpdates);
+router.get('/update/:id', getOneUpdate);
+
 router.post(
   '/update',
   body('title').exists().isString(),
   body('body').exists().isString(),
-  () => {}
+  body('productId').exists().isString(),
+  createUpdate
 );
-router.delete('/update/:id', () => {});
+router.put(
+  '/update/:id',
+  body('title').optional(),
+  body('body').optional(),
+  body('status').isIn(['IN_PROGRESS', 'SHIPPED', 'DEPRECATED']).optional(),
+  body('version').optional(),
+  handleInputError,
+  updateUpdatesById
+);
+router.delete('/update/:id', deleteUpdate);
+
 // Update Point
 router.get('/updatepoint', () => {});
 router.get('/updatepoint/:id', () => {});
